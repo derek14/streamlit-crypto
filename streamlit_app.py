@@ -17,9 +17,10 @@ import numpy as np
 from datetime import datetime
 
 valid_crypto_list = download_valid_crypto_list()
-st.title("Crypto Portfolio Optimizer")
+st.title("Crypto Portfolio Optimizer (For Alon Internal Use ONLY)")
 
-st.header("Inputs")
+st.header("Enter Your Inputs")
+st.caption("We are using data provided by CoinBase Pro, inlcuding only the pairs that are USD denominated, actively trading on Coinbase.")
 selected_pairs = st.multiselect(
     'What crypto pairs do you want to include?',
     valid_crypto_list,
