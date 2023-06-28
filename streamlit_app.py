@@ -3,7 +3,7 @@ import altair as alt
 import math
 import pandas as pd
 import streamlit as st
-from utils import Cryptocurrencies, download_crypto_data, download_valid_crypto_list, ordered_dict_to_dataframe, plot_covariance, show_efficient_froniter
+from utils import Cryptocurrencies, download_crypto_data, download_valid_crypto_list, ordered_dict_to_dataframe, plot_covariance, show_efficient_froniter, convert_df_to_csv
 import pandas as pd
 import requests
 import time
@@ -31,6 +31,13 @@ start_date = st.date_input(
     datetime(2022, 6, 25).date()).strftime('%Y-%m-%d-%H-%M')
 
 crypto_df = download_crypto_data(selected_pairs, start_date)
+csv = convert_df_to_csv(crypto_df)
+st.download_button(
+    label='Download CSV',
+    data=csv,
+    file_name='crypto_data.csv',
+    mime='text/csv'
+)
 
 st.header("Risk Modelling")
 mu = expected_returns.ema_historical_return(crypto_df, frequency=365)

@@ -12,11 +12,28 @@ from datetime import datetime
 import streamlit as st
 
 @st.cache_data
+def convert_df_to_csv(df):
+    csv = df.to_csv(index=True).encode('utf-8')
+    return csv
+
+@st.cache_data
 def download_valid_crypto_list():
   crypto_pairs = Cryptocurrencies().find_crypto_pairs()
   valid_crypto_pairs = crypto_pairs[(crypto_pairs["fx_stablecoin"]==False)&(crypto_pairs["status"]=="online")&(crypto_pairs["display_name"].str.endswith("/USD"))]
   return valid_crypto_pairs["id"].unique().tolist()
 
+def download_crypto_data(selected_pairs, start_date, interval = 86400):
+  temp_dict = {}
+  for pair in selected_pairs:
+    temp_dict[pair] = download_single_crypto_data(pair, start_date, interval)["close"]
+  crypto_df = pd.DataFrame.from_dict(temp_dict)
+  crypto_df.dropna(axis='columns', inplace=True)
+  return crypto_df
+
+@st.cache_data
+def download_single_crypto_data(pair, start_date, interval = 86400):
+   return HistoricalData(pair,interval,start_date, verbose=False).retrieve_data()
+   
 def ordered_dict_to_dataframe(ordered_dict):
     df = pd.DataFrame(list(ordered_dict.items()), columns=['TICKER', 'WEIGHT'])
     df = df.set_index("TICKER")
@@ -83,11 +100,3 @@ def show_efficient_froniter(mu, Sigma, long_only=True, **kwargs):
   plotting._plot_io(**kwargs)
   return ef.clean_weights(), fig
 
-@st.cache_data
-def download_crypto_data(selected_pairs, start_date, interval = 86400):
-  temp_dict = {}
-  for pair in selected_pairs:
-    temp_dict[pair] = HistoricalData(pair,interval,start_date, verbose=False).retrieve_data()["close"]
-  crypto_df = pd.DataFrame.from_dict(temp_dict)
-  crypto_df.dropna(axis='columns', inplace=True)
-  return crypto_df
