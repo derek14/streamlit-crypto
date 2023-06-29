@@ -1,14 +1,10 @@
 import pandas as pd
-import requests
-import time
 import matplotlib.pyplot as plt
 from pypfopt import risk_models, plotting
-from pypfopt.risk_models import CovarianceShrinkage
-from pypfopt import expected_returns, risk_models
+from pypfopt import risk_models
 from pypfopt.efficient_frontier import EfficientFrontier
-from Historic_Crypto import Cryptocurrencies, HistoricalData, LiveCryptoData
+from Historic_Crypto import Cryptocurrencies, HistoricalData
 import numpy as np
-from datetime import datetime
 import streamlit as st
 
 @st.cache_data

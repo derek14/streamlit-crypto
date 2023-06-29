@@ -1,19 +1,7 @@
-from collections import namedtuple
-import altair as alt
-import math
-import pandas as pd
 import streamlit as st
-from utils import Cryptocurrencies, download_crypto_data, download_valid_crypto_list, ordered_dict_to_dataframe, plot_covariance, show_efficient_froniter, convert_df_to_csv
-import pandas as pd
-import requests
-import time
-import matplotlib.pyplot as plt
-from pypfopt import risk_models, plotting
-from pypfopt.risk_models import CovarianceShrinkage
+from utils import download_crypto_data, download_valid_crypto_list, ordered_dict_to_dataframe, plot_covariance, show_efficient_froniter, convert_df_to_csv
 from pypfopt import expected_returns, risk_models
 from pypfopt.efficient_frontier import EfficientFrontier
-from Historic_Crypto import Cryptocurrencies, HistoricalData, LiveCryptoData
-import numpy as np
 from datetime import datetime
 
 valid_crypto_list = download_valid_crypto_list()
