@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from pypfopt import risk_models, plotting
-from pypfopt import risk_models
+from pypfopt import objective_functions
 from pypfopt.efficient_frontier import EfficientFrontier
 from Historic_Crypto import Cryptocurrencies, HistoricalData
 import numpy as np
@@ -71,11 +71,18 @@ def plot_covariance(cov_matrix, plot_correlation=False, show_tickers=True, **kwa
 
     return fig
 
-def show_efficient_froniter(mu, Sigma, long_only=True, **kwargs):
+def show_efficient_froniter(mu, Sigma, long_only=True, gamma=0.1, **kwargs):
   ef = EfficientFrontier(mu, Sigma, weight_bounds=(0, 1) if long_only else (None, None))
-  fig, ax = plt.subplots()
+  ef_for_quadratic = ef.deepcopy()
+  ef_for_plotting = ef.deepcopy()
   ef_max_sharpe = ef.deepcopy()
-  plotting.plot_efficient_frontier(ef, ax=ax, show_assets=False)
+
+  ef_for_quadratic.add_objective(objective_functions.L2_reg, gamma=gamma)
+  ef_for_quadratic.max_quadratic_utility()
+  weights = ef_for_quadratic.clean_weights()
+  fig, ax = plt.subplots()
+  
+  plotting.plot_efficient_frontier(ef_for_plotting, ax=ax, show_assets=False)
 
   # Find the tangency portfolio
   ef_max_sharpe.max_sharpe()
@@ -94,5 +101,4 @@ def show_efficient_froniter(mu, Sigma, long_only=True, **kwargs):
   ax.set_title("Efficient Frontier with random portfolios")
   ax.legend()
   plotting._plot_io(**kwargs)
-  return ef.clean_weights(), fig
-
+  return weights, fig

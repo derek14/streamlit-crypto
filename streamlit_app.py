@@ -20,6 +20,9 @@ start_date = st.date_input(
 
 crypto_df = download_crypto_data(selected_pairs, start_date)
 csv = convert_df_to_csv(crypto_df)
+
+gamma = st.number_input('L2 Regularization gamma', min_value=0.1, max_value=2.0, value=0.1, step=0.1, format="%.1f")
+
 st.download_button(
     label='Download CSV',
     data=csv,
@@ -47,13 +50,13 @@ st.subheader("Efficient Frontier (Long Only)")
 st.caption("The efficient frontier is a set of ideal or optimal portfolios that offer the highest expected return for a specific level of risk. The standard deviation of returns in a portfolio measures investment risk and consistency in investment earnings. Lower covariance between portfolio securities results in lower portfolio standard deviation. Successful optimization of the return versus risk paradigm should place a portfolio along the efficient frontier line. Portfolios that lie below the efficient frontier are sub-optimal because they do not provide enough return for the level of risk.")
 st.caption("In order to diversify risks, it is important to choose uncorrelated assets. Keeping uncorrelated assets ensures that the entire portfolio is not killed by just one stray bullet. However, a portfolio consisting only of risky assets always has some risk, since most assets have some correlation because they are all subject to systemic risk.")
 st.caption("If a portfolio has very few assets that are highly correlated, it is not going to be great for several reasons. First, it will not be diversified enough, which means that it will not provide enough return for the level of risk. Second, the portfolio will have a higher standard deviation of returns, which means that it will be more volatile. Third, the portfolio will not be efficient, which means that it will not offer the highest expected return for a specific level of risk.")
-weights, fig = show_efficient_froniter(mu, Sigma, long_only=True)
+weights, fig = show_efficient_froniter(mu, Sigma, long_only=True, gamma=gamma)
 st.pyplot(fig)
 st.table(ordered_dict_to_dataframe(weights))
 
 st.subheader("Efficient Frontier (Long/ Short)")
 st.caption("""When it comes to efficient frontier analysis in a long-only sense, having few assets that are highly correlated doesn't make sense because it doesn't provide enough diversification to reduce risk. However, in a long-short manner, having few assets that are highly correlated can work because it allows for a market-neutral strategy that can profit from the difference in performance between the two assets.""")
-weights, fig = show_efficient_froniter(mu, Sigma, long_only=False)
+weights, fig = show_efficient_froniter(mu, Sigma, long_only=False, gamma=gamma)
 st.pyplot(fig)
 st.table(ordered_dict_to_dataframe(weights))
 
